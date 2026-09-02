@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="be">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Energy Experiments</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">Energy Experiments</div>
+        <h1 id="screenTitle">Сёння</h1>
+      </div>
+      <button id="installBtn" class="ghost hidden">Усталяваць</button>
+    </header>
+
+    <section id="todayScreen" class="screen active">
+      <div class="card hero">
+        <div class="muted">Бягучы эксперымент</div>
+        <h2 id="experimentName"></h2>
+        <p id="experimentInstruction"></p>
+        <div class="progress-row">
+          <span id="experimentDay"></span>
+          <span id="experimentRange"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-head">
+          <h3>Хуткая падзея</h3>
+          <span class="muted">1 націск</span>
+        </div>
+        <div id="quickEvents" class="event-grid"></div>
+      </div>
+
+      <div class="card">
+        <div class="section-head">
+          <h3>Як я зараз?</h3>
+          <span id="nowValueLabel" class="pill">—</span>
+        </div>
+        <div class="scale" id="energyScale"></div>
+        <button id="saveNowBtn" class="primary full">Запісаць энергію</button>
+      </div>
+
+      <div class="card">
+        <div class="section-head">
+          <h3>Сёння</h3>
+          <button id="openEveningBtn" class="ghost">Вячэрні check‑in</button>
+        </div>
+        <div id="todayStats" class="stats-grid"></div>
+      </div>
+    </section>
+
+    <section id="checkinScreen" class="screen">
+      <div class="card">
+        <h2>Вячэрні check‑in</h2>
+        <p class="muted">Каля 20 секунд. Тэкст не абавязковы.</p>
+
+        <label>Энергія пасля працы <span id="eveningEnergyVal">5</span>/10</label>
+        <input id="eveningEnergy" type="range" min="0" max="10" value="5" />
+
+        <label>Перагрузка <span id="overloadVal">5</span>/10</label>
+        <input id="overload" type="range" min="0" max="10" value="5" />
+
+        <label>Колькі часу да “магу нешта рабіць”?</label>
+        <div class="segmented" id="recoveryOptions">
+          <button data-value="0">0</button>
+          <button data-value="30">30м</button>
+          <button data-value="60">1г</button>
+          <button data-value="120">2г</button>
+          <button data-value="180">3г+</button>
+        </div>
+
+        <label>Засталіся сілы на жыццё?</label>
+        <div class="segmented" id="lifeOptions">
+          <button data-value="yes">Так</button>
+          <button data-value="some">Крыху</button>
+          <button data-value="no">Не</button>
+        </div>
+
+        <button id="saveEveningBtn" class="primary full">Захаваць</button>
+      </div>
+
+      <div class="card">
+        <h3>Ранішні сон</h3>
+        <div class="segmented wrap" id="sleepHours">
+          <button data-value="3">3</button><button data-value="4">4</button>
+          <button data-value="6">6</button><button data-value="8">8</button>
+          <button data-value="10">10</button><button data-value="12">12</button>
+        </div>
+        <label class="inline-check"><input type="checkbox" id="restedCheck" /> Прачнулася выспанай</label>
+        <button id="saveSleepBtn" class="secondary full">Захаваць сон</button>
+      </div>
+    </section>
+
+    <section id="experimentScreen" class="screen">
+      <div class="card">
+        <div class="muted">Тыдзень <span id="weekNumber"></span></div>
+        <h2 id="expTitle"></h2>
+        <p id="expHypothesis"></p>
+        <div class="rule-box" id="expRule"></div>
+      </div>
+      <div class="card">
+        <h3>План</h3>
+        <div id="expPlan"></div>
+      </div>
+      <div class="card">
+        <h3>Эксперыменты</h3>
+        <div id="experimentList" class="experiment-list"></div>
+      </div>
+    </section>
+
+    <section id="insightsScreen" class="screen">
+      <div class="card">
+        <h2>Карціна</h2>
+        <div id="insightCards" class="insight-list"></div>
+      </div>
+      <div class="card">
+        <h3>Апошнія 7 дзён</h3>
+        <div id="weeklySummary"></div>
+      </div>
+    </section>
+
+    <section id="settingsScreen" class="screen">
+      <div class="card">
+        <h2>Даныя</h2>
+        <p class="muted">Усё захоўваецца толькі ў гэтым браўзеры.</p>
+        <button id="exportBtn" class="secondary full">Экспарт JSON</button>
+        <label class="file-btn secondary full">Імпарт JSON<input id="importInput" type="file" accept="application/json" /></label>
+        <button id="resetBtn" class="danger full">Выдаліць усе даныя</button>
+      </div>
+      <div class="card">
+        <h3>Пра прыватнасць</h3>
+        <p>Няма backend, аналітыкі, cookies або ўліковага запісу. Для backup выкарыстоўвай Export JSON.</p>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav">
+    <button data-screen="todayScreen" class="active">Сёння</button>
+    <button data-screen="checkinScreen">Check‑in</button>
+    <button data-screen="experimentScreen">Эксперымент</button>
+    <button data-screen="insightsScreen">Insights</button>
+    <button data-screen="settingsScreen">Даныя</button>
+  </nav>
+
+  <div id="toast" class="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
