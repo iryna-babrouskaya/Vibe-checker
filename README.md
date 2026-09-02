@@ -1,40 +1,22 @@
-# Energy Experiments PWA
+# Energy Lab PWA v10
 
-Zero-cost, local-first PWA для 6-тыднёвых эксперыментаў з энергіяй.
+Гэта асобная PWA-зборка чыстай v10.
 
-## Што ёсць
-- quick events: Call / Context / Noise / People / Hard task / Walk / Recovery / Flow
-- energy check-in 0–10
-- evening check-in
-- sleep check-in
-- 6 эксперыментаў па тыднях
-- лакальныя insights за 7 дзён
-- JSON export/import
-- offline PWA
-- без backend, лагіна, аналітыкі і cookies
+## Файлы
+- index.html
+- manifest.webmanifest
+- sw.js
+- icon-192.png
+- icon-512.png
 
-## Запуск лакальна
-PWA/service worker патрабуе HTTP, таму:
-```bash
-python3 -m http.server 8080
-```
-Пасля адкрый `http://localhost:8080`.
-
-## Бясплатны deploy
-### GitHub Pages
-1. Ствары repo і пакладзі туды ўсе файлы.
+## GitHub Pages
+1. Загрузі ўсе файлы ў корань repo.
 2. Settings → Pages.
-3. Source: Deploy from a branch.
-4. Branch: `main`, folder `/root`.
-5. Адкрый URL GitHub Pages.
+3. Deploy from a branch → main → /(root).
+4. Адкрый HTTPS-адрас сайта на тэлефоне.
+5. У меню браўзера выберы Add to Home screen / Install app.
 
-### Cloudflare Pages
-1. New project → Pages.
-2. Падключы repo.
-3. Framework preset: None.
-4. Build command: пусты.
-5. Output directory: `/`.
-
-## Даныя
-Даныя жывуць у localStorage гэтага браўзера. Калі ачысціць browser storage — яны знікнуць.
-Рабі Export JSON як backup.
+## Важна
+PWA не ўсталюецца пры простым адкрыцці index.html як лакальнага файла.
+Патрэбны HTTPS-хостынг, напрыклад GitHub Pages.
+Даныя захоўваюцца лакальна ў браўзеры гэтай прылады.
