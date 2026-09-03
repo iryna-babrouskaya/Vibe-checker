@@ -1,7 +1,8 @@
 {
+  "id": "./",
   "name": "Energy Lab",
   "short_name": "Energy Lab",
-  "description": "Local-first tracker for energy, activities and daily patterns.",
+  "description": "Local-first tracker for energy, work, recovery, activities and weekly patterns.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -9,13 +10,13 @@
   "theme_color": "#0b1020",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
