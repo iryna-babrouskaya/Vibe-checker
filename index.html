@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Energy Lab</title>
 <meta name="application-name" content="Energy Lab">
-<meta name="energy-lab-version" content="10.0.1">
+<meta name="energy-lab-version" content="10.0.2">
 <meta name="theme-color" content="#0b1020">
-<link rel="manifest" href="./manifest.webmanifest">
-<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="manifest" href="./manifest.webmanifest?v=10.0.2">
+<link rel="apple-touch-icon" href="./icon-192.png?v=10.0.2">
 <style>
 :root{--bg:#0b1020;--card:#151c30;--card2:#1d2742;--text:#f4f7ff;--muted:#aab5d2;--line:#303b5e;--accent:#a8c3ff;--danger:#ff9b9b}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.4 system-ui,-apple-system,Segoe UI,sans-serif}
@@ -61,7 +61,7 @@ label{display:block;margin:13px 0 5px}.scale{display:grid;grid-template-columns:
 </section>
 
 <section id="data" class="screen">
-<div class="card"><div class="small">Energy Lab · v10.0.1</div></div>
+<div class="card"><div class="small">Energy Lab · v10.0.2</div></div>
 <div class="card"><h2>Даныя</h2><p class="muted">Захоўваюцца толькі ў гэтым браўзеры.</p>
 <button id="exportJson" class="primary full">Экспарт JSON</button>
 <button id="exportCsv" class="btn full">Экспарт CSV</button>
@@ -430,19 +430,59 @@ render();
 </script>
 
 <script>
-if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+(() => {
+  const VERSION = "10.0.2";
+  const RELOAD_GUARD = "energyLabReloadedFor:" + VERSION;
+
+  if (!("serviceWorker" in navigator) || !location.protocol.startsWith("http")) return;
+
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (sessionStorage.getItem(RELOAD_GUARD)) return;
+    sessionStorage.setItem(RELOAD_GUARD, "1");
+    location.reload();
+  });
+
   window.addEventListener("load", async () => {
     try {
-      const reg = await navigator.serviceWorker.register("./sw.js?v=10.0.1", {
+      const reg = await navigator.serviceWorker.register("./sw.js?v=" + VERSION, {
         scope: "./",
         updateViaCache: "none"
       });
+
+      const activateWaiting = () => {
+        if (reg.waiting) reg.waiting.postMessage({ type: "SKIP_WAITING" });
+      };
+
+      activateWaiting();
+
+      if (reg.installing) {
+        reg.installing.addEventListener("statechange", () => {
+          if (reg.installing?.state === "installed" && navigator.serviceWorker.controller) {
+            reg.installing.postMessage({ type: "SKIP_WAITING" });
+          }
+        });
+      }
+
+      reg.addEventListener("updatefound", () => {
+        const worker = reg.installing;
+        if (!worker) return;
+        worker.addEventListener("statechange", () => {
+          if (worker.state === "installed" && navigator.serviceWorker.controller) {
+            worker.postMessage({ type: "SKIP_WAITING" });
+          }
+        });
+      });
+
       await reg.update();
+      activateWaiting();
+
+      // One extra delayed check helps on aggressively cached mobile browsers.
+      setTimeout(() => reg.update().catch(() => {}), 2500);
     } catch (err) {
-      console.error("Service worker registration failed", err);
+      console.error("Service worker registration/update failed", err);
     }
   });
-}
+})();
 </script>
 
 </body></html>

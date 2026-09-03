@@ -1,38 +1,41 @@
-const VERSION = "10.0.1";
-const CACHE_NAME = "energy-lab-10.0.1";
+const VERSION = "10.0.2";
+const CACHE_NAME = "energy-lab-10.0.2";
 const APP_SHELL = [
-  "./",
   "./index.html",
-  "./manifest.webmanifest",
-  "./icon-192.png",
-  "./icon-512.png"
+  "./manifest.webmanifest?v=10.0.2",
+  "./icon-192.png?v=10.0.2",
+  "./icon-512.png?v=10.0.2"
 ];
 
 self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(APP_SHELL))
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil((async () => {
+    const cache = await caches.open(CACHE_NAME);
+    await cache.addAll(APP_SHELL);
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener("activate", event => {
   event.waitUntil((async () => {
     const keys = await caches.keys();
-
-    // Remove all older Energy Lab caches, not only the immediately previous one.
     await Promise.all(
       keys
         .filter(key => key.startsWith("energy-lab-") && key !== CACHE_NAME)
         .map(key => caches.delete(key))
     );
 
+    if (self.registration.navigationPreload) {
+      try { await self.registration.navigationPreload.enable(); } catch {}
+    }
+
     await self.clients.claim();
   })());
 });
 
 self.addEventListener("message", event => {
-  if (event.data === "SKIP_WAITING") self.skipWaiting();
+  if (event.data === "SKIP_WAITING" || event.data?.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener("fetch", event => {
@@ -40,33 +43,37 @@ self.addEventListener("fetch", event => {
 
   const url = new URL(event.request.url);
 
-  // Navigation: network first, so a deployment is picked up promptly.
   if (event.request.mode === "navigate") {
-    event.respondWith(
-      fetch(event.request)
-        .then(response => {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put("./index.html", copy));
-          return response;
-        })
-        .catch(() => caches.match("./index.html"))
-    );
+    event.respondWith((async () => {
+      try {
+        const preload = await event.preloadResponse;
+        if (preload) {
+          const cache = await caches.open(CACHE_NAME);
+          cache.put("./index.html", preload.clone());
+          return preload;
+        }
+
+        const fresh = await fetch(event.request, { cache: "no-store" });
+        const cache = await caches.open(CACHE_NAME);
+        cache.put("./index.html", fresh.clone());
+        return fresh;
+      } catch {
+        return (await caches.match("./index.html")) || Response.error();
+      }
+    })());
     return;
   }
 
-  // Static app shell: cache first, then network + refresh cache.
   if (url.origin === self.location.origin) {
-    event.respondWith(
-      caches.match(event.request).then(cached => {
-        const network = fetch(event.request).then(response => {
-          if (response && response.ok) {
-            const copy = response.clone();
-            caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
-          }
-          return response;
-        });
-        return cached || network;
-      })
-    );
+    event.respondWith((async () => {
+      try {
+        const fresh = await fetch(event.request, { cache: "no-store" });
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(event.request, fresh.clone());
+        return fresh;
+      } catch {
+        return (await caches.match(event.request)) || Response.error();
+      }
+    })());
   }
 });
