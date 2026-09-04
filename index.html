@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Energy Lab</title>
 <meta name="application-name" content="Energy Lab">
-<meta name="energy-lab-version" content="10.0.2">
+<meta name="energy-lab-version" content="10.2.1">
 <meta name="theme-color" content="#0b1020">
-<link rel="manifest" href="./manifest.webmanifest?v=10.0.2">
-<link rel="apple-touch-icon" href="./icon-192.png?v=10.0.2">
+<link rel="manifest" href="./manifest.webmanifest?v=10.2.1">
+<link rel="apple-touch-icon" href="./icon-192.png?v=10.2.1">
 <style>
 :root{--bg:#0b1020;--card:#151c30;--card2:#1d2742;--text:#f4f7ff;--muted:#aab5d2;--line:#303b5e;--accent:#a8c3ff;--danger:#ff9b9b}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.4 system-ui,-apple-system,Segoe UI,sans-serif}
@@ -16,14 +16,14 @@ main{max-width:760px;margin:auto;padding:16px 14px 92px}h1,h2,h3,p{margin-top:0}
 .small,.muted{color:var(--muted);font-size:13px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin:0 0 12px}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.between{justify-content:space-between}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 button,.btn,input,select,textarea{font:inherit}.tile,button,.btn{border:1px solid var(--line);background:var(--card2);color:var(--text);border-radius:13px;padding:11px}
-.tile{min-height:68px;text-align:left}.tile b{display:block}.primary{background:var(--accent);color:#0c1325;border:0;font-weight:700}.full{width:100%;display:block;text-align:center;margin-top:10px}
-.ghost{background:transparent}.danger{color:var(--danger);background:transparent}.pill{display:inline-block;padding:5px 9px;border-radius:999px;background:var(--card2);margin:3px}
+.tile{min-height:68px;text-align:left}.tile b{display:block}.primary{background:var(--accent);color:#0c1325;border:0;font-weight:700}.active-chip{background:#24345d;color:#f4f7ff;border:1px solid #6e8ed6;box-shadow:0 0 0 1px rgba(168,195,255,.15) inset}.chip-actions{display:flex;gap:6px;margin-left:auto}.chip-actions button{padding:6px 9px;min-width:34px}.full{width:100%;display:block;text-align:center;margin-top:10px}
+.ghost{background:transparent}.danger{color:var(--danger);background:transparent}.pill{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:var(--card2);margin:3px;color:var(--text);border:1px solid var(--line)}
 input[type=range]{width:100%}input[type=text],input[type=number],select,textarea{width:100%;padding:11px;border-radius:11px;border:1px solid var(--line);background:#0f1629;color:var(--text)}
 label{display:block;margin:13px 0 5px}.scale{display:grid;grid-template-columns:repeat(11,1fr);gap:4px}.scale button{padding:9px 0}.scale button.on,.choice button.on{outline:2px solid var(--accent)}
 .choice{display:flex;gap:6px;flex-wrap:wrap}.choice button{flex:1;min-width:80px}.hint{border-left:3px solid var(--accent);padding:10px 12px;background:var(--card2);border-radius:8px;margin:8px 0;font-size:13px;color:var(--muted)}
 .hidden{display:none!important}.screen{display:none}.screen.on{display:block}.nav{position:fixed;bottom:0;left:0;right:0;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(11,16,32,.96);border-top:1px solid var(--line);padding:7px 6px calc(7px + env(safe-area-inset-bottom));z-index:5}
 .nav button{border:0;background:none;color:var(--muted);padding:8px 2px;font-size:12px}.nav button.on{color:var(--text);font-weight:700}
-.logitem{border-top:1px solid var(--line);padding:10px 0}.logitem:first-child{border-top:0}.tag{font-size:12px;color:var(--accent);margin-right:5px}
+.logitem{border-top:1px solid var(--line);padding:10px 0}.log-actions{display:flex;gap:6px;flex-shrink:0}.iconbtn{padding:7px 9px;min-width:36px}.logitem:first-child{border-top:0}.tag{font-size:12px;color:var(--accent);margin-right:5px}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:20;display:flex;align-items:flex-end}.sheet{background:var(--bg);border:1px solid var(--line);border-radius:22px 22px 0 0;padding:16px;width:100%;max-height:88vh;overflow:auto}
 .chart{width:100%;height:260px;background:#0f1629;border-radius:12px}.legend{font-size:12px;color:var(--muted);margin-top:6px}.active-session{border:1px solid var(--accent);background:#172440}
 @media(max-width:520px){
@@ -43,7 +43,7 @@ label{display:block;margin:13px 0 5px}.scale{display:grid;grid-template-columns:
 <div id="yesterdayRatingCard"></div>
 <div class="card">
 <div class="row between"><h3>Дадаць падзею</h3><button id="addCategory" class="ghost">+ Катэгорыя</button></div>
-<div id="workChipArea"></div>
+<div class="card" style="margin-bottom:10px"><div class="row between"><div><b>⚡ Energy зараз</b><div class="small">Без прычыны і без прывязкі да падзеі</div></div><button id="globalEnergyBtn" class="ghost" title="Адзначыць Energy">＋</button></div></div><div id="workChipArea"></div>
 <div id="eventGrid" class="grid"></div>
 </div>
 <div class="card"><div class="row between"><h3>Сённяшняя шкала</h3><span class="small">час → energy + падзеі</span></div><canvas id="dayChart" class="chart"></canvas><div class="legend">Лінія = energy. Каляровыя палоскі/маркіроўкі = твае падзеі па часе.</div></div>
@@ -61,7 +61,7 @@ label{display:block;margin:13px 0 5px}.scale{display:grid;grid-template-columns:
 </section>
 
 <section id="data" class="screen">
-<div class="card"><div class="small">Energy Lab · v10.0.2</div></div>
+<div class="card"><div class="small">Energy Lab · v10.2.1</div></div>
 <div class="card"><h2>Даныя</h2><p class="muted">Захоўваюцца толькі ў гэтым браўзеры.</p>
 <button id="exportJson" class="primary full">Экспарт JSON</button>
 <button id="exportCsv" class="btn full">Экспарт CSV</button>
@@ -122,7 +122,7 @@ function energyModal(cb){
 }
 quickEnergy.onclick=()=>energyModal();
 
-function entryModal(cat){
+function entryModal(cat, existing=null){
  const hint=cat.hint?`<div class="hint">${esc(cat.hint)}</div>`:"";
  const allowedTags = {
    recovery:["цішыня","цемра","ляжаць","музыка","душ"],
@@ -142,11 +142,11 @@ function entryModal(cat){
  const tagButtons=tagsForCat.map(t=>`<button type="button" data-tag="${esc(t)}">#${esc(t)}</button>`).join("");
 
  if(cat.id==="work"){
-   let existing=db.entries.find(e=>e.cat==="work" && e.start.slice(0,10)===day());
+   existing=existing || db.entries.find(e=>e.cat==="work" && e.start.slice(0,10)===day());
    let startEnergy=existing?.startEnergy ?? null;
    let endEnergy=existing?.endEnergy ?? null;
    open(`<div class="row between"><h2>💼 Працоўны дзень</h2><button id="x" class="ghost">✕</button></div>${hint}
-   <div class="hint">Можна запоўніць у два этапы. Раніцай — дзе працуеш і Energy перад працай. Пасля працы — кантэксты, размовы і Energy пасля. Потым усё можна рэдагаваць.</div>
+   <div class="hint">Можна запоўніць у два этапы. Раніцай — дзе працуеш і Energy перад працай. Пасярэдзіне дня выкарыстоўвай `＋` на chip Праца для дадатковых Energy-checkpoints. Пасля працы — кантэксты, размовы і Energy пасля. Потым усё можна рэдагаваць.</div>
    <label>Дзе сёння працуеш?</label><div id="workPlace" class="choice"><button data-v="home">дома</button><button data-v="office">офіс</button><button data-v="mixed">змешана</button></div>
    <label>Energy перад працай ⓘ</label><div class="hint">Колькі рэсурсу было перад пачаткам працоўнага дня.</div>
    <div id="startEScale" class="scale">${[0,1,2,3,4,5,6,7,8,9,10].map(n=>`<button data-v="${n}">${n}</button>`).join("")}</div>
@@ -171,13 +171,12 @@ function entryModal(cat){
      if(!place){alert("Абяры, дзе сёння працуеш");return}
      if(startEnergy===null){alert("Адзнач Energy перад працай");return}
      let e=existing||{id:crypto.randomUUID(),cat:"work",name:"",tags:[],start:iso(),end:iso()};
+     const wasNew=!existing;
      Object.assign(e,{workPlace:place,contexts,calls,startEnergy,endEnergy,note:note.value.trim(),end:iso()});
-     if(!existing)db.entries.push(e);
-     // also store energy check-ins so charts reflect before/after work
-     if(!existing || existing.startEnergy!==startEnergy){
-       db.energy.push({ts:iso(),value:startEnergy,source:"work-start"});
-     }
-     if(endEnergy!==null) db.energy.push({ts:iso(),value:endEnergy,source:"work-end"});
+     if(wasNew)db.entries.push(e);
+     db.energy=db.energy.filter(x=>!(x.workEntryId===e.id && (x.source==="work-start" || x.source==="work-end")));
+     db.energy.push({ts:e.start||iso(),date:day(),value:startEnergy,source:"work-start",workScoped:true,workEntryId:e.id});
+     if(endEnergy!==null) db.energy.push({ts:iso(),date:day(),value:endEnergy,source:"work-end",workScoped:true,workEntryId:e.id});
      save();close();
    };
    return;
@@ -197,27 +196,43 @@ function entryModal(cat){
  <div id="tagChoices" class="choice">${tagButtons}</div>` : "";
 
  open(`<div class="row between"><h2>${cat.icon} ${esc(cat.name)}</h2><button id="x" class="ghost">✕</button></div>${hint}
- ${["talk","other","hospital","stress"].includes(cat.id)?`<label>Кароткае ўдакладненне <span class="muted">(неабавязкова)</span></label><input id="ename" type="text" placeholder="${cat.id==="talk"?"Напр. размова з сябрам":cat.id==="hospital"?"Напр. прыём па руцэ":cat.id==="stress"?"Напр. нечаканая праблема":"Што гэта было"}">`:`<input id="ename" type="hidden" value="">`}
+ ${["talk","other","hospital","stress"].includes(cat.id)?`<label>Кароткае ўдакладненне <span class="muted">(неабавязкова)</span></label><input id="ename" type="text" value="${esc(existing?.name||"")}" placeholder="${cat.id==="talk"?"Напр. размова з сябрам":cat.id==="hospital"?"Напр. прыём па руцэ":cat.id==="stress"?"Напр. нечаканая праблема":"Што гэта было"}">`:`<input id="ename" type="hidden" value="${esc(existing?.name||"")}">`}
  ${durationBlock}
  ${tagsBlock}
- <label>Кароткая нататка <span class="muted">(неабавязкова)</span></label><textarea id="note" rows="2"></textarea>
+ <label>Кароткая нататка <span class="muted">(неабавязкова)</span></label><textarea id="note" rows="2">${esc(existing?.note||"")}</textarea>
  ${cat.id==="stress"?`<label>Наколькі выбіла?</label><div id="impactBox" class="choice"><button data-v="light">крыху</button><button data-v="medium">адчувальна</button><button data-v="strong">вельмі</button></div>`:""}
- <button id="startSave" class="primary full">Захаваць</button>`);
+ <button id="startSave" class="primary full">${existing?"Захаваць змены":"Захаваць"}</button>`);
 
- x.onclick=close; let tags=[], duration=null, impactValue=null;
- if(document.getElementById("tagChoices")) tagChoices.querySelectorAll("[data-tag]").forEach(b=>b.onclick=()=>{let t=b.dataset.tag;tags.includes(t)?tags=tags.filter(x=>x!==t):tags.push(t);b.classList.toggle("on")});
+ x.onclick=close; let tags=[...(existing?.tags||[])], duration=existing?.durationMin??null, impactValue=existing?.impact??null;
+ if(document.getElementById("tagChoices")) {
+   tagChoices.querySelectorAll("[data-tag]").forEach(b=>{
+     b.classList.toggle("on",tags.includes(b.dataset.tag));
+     b.onclick=()=>{let t=b.dataset.tag;tags.includes(t)?tags=tags.filter(x=>x!==t):tags.push(t);b.classList.toggle("on")}
+   });
+ }
  if(cat.timed){
+   const presets=[5,15,30,60,120,180];
+   if(duration!==null){
+     if(presets.includes(duration)) durChoices.querySelectorAll("[data-min]").forEach(b=>b.classList.toggle("on",+b.dataset.min===duration));
+     else customDur.value=duration;
+   }
    durChoices.querySelectorAll("[data-min]").forEach(b=>b.onclick=()=>{duration=+b.dataset.min;customDur.value="";durChoices.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b))});
    customDur.oninput=()=>{duration=customDur.value?+customDur.value:null;durChoices.querySelectorAll("button").forEach(x=>x.classList.remove("on"))};
  }
- if(cat.id==="stress") impactBox.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{impactValue=b.dataset.v;impactBox.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b))});
+ if(cat.id==="stress") impactBox.querySelectorAll("[data-v]").forEach(b=>{
+   b.classList.toggle("on",b.dataset.v===impactValue);
+   b.onclick=()=>{impactValue=b.dataset.v;impactBox.querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b))}
+ });
 
  startSave.onclick=()=>{
    if(cat.timed && !duration){alert("Абяры прыкладную працягласць");return}
-   const endTime=new Date(), startTime=new Date(endTime.getTime()-(duration||0)*60000);
-   const e={id:crypto.randomUUID(),cat:cat.id,name:ename.value.trim(),tags,note:note.value.trim(),start:startTime.toISOString(),end:endTime.toISOString(),durationMin:duration,impact:impactValue};
-   db.entries.push(e);save();close();
-   if(["hobby","walk","bike","workout","screen","recovery","date","lithuanian"].includes(cat.id)) followupModal(e);
+   const endTime=new Date(existing?.end||Date.now()), startTime=new Date(endTime.getTime()-(duration||0)*60000);
+   const e=existing || {id:crypto.randomUUID(),cat:cat.id,start:startTime.toISOString(),end:endTime.toISOString()};
+   Object.assign(e,{cat:cat.id,name:ename.value.trim(),tags,note:note.value.trim(),durationMin:duration,impact:impactValue});
+   if(cat.timed){e.start=startTime.toISOString();e.end=endTime.toISOString()}
+   if(!existing) db.entries.push(e);
+   save();close();
+   followupModal(e);
  }
 }
 function tenScale(id, selected=null){
@@ -231,61 +246,87 @@ function bindScale(id, initial, onChange){
  mark();
  return ()=>v;
 }
+function upsertEventEnergy(e, side, value){
+ const source=`event-${side}`;
+ db.energy=db.energy.filter(x=>!(x.entryId===e.id && x.source===source));
+ if(value===null || value===undefined) return;
+ const ts=side==="before" ? (e.start||e.end||iso()) : (e.end||e.start||iso());
+ db.energy.push({ts,value,source,entryId:e.id});
+}
 function followupModal(e){
  const cat=db.categories.find(c=>c.id===e.cat)||{name:e.cat,icon:""};
  const physicalActivity=["walk","bike","workout"].includes(e.cat);
-
+ open(`<div class="row between"><h2>${cat.icon||""} ${esc(e.name||cat.name)}</h2><button id="fx" class="ghost">✕</button></div>
+ <div class="hint">Гэтыя ацэнкі можна рэдагаваць пазней. Energy да/пасля дае дэльту менавіта для гэтай падзеі.</div>
+ <label>Energy да падзеі</label>${tenScale("beforeEnergy",e.beforeEnergy??null)}
+ <label>Energy пасля падзеі</label>${tenScale("afterEnergy",e.afterEnergy??null)}
+ <label>Ацэнка падзеі 0–10 ⓘ</label>
+ <div class="hint">0 — вельмі дрэнна / зусім не задаволена; 10 — вельмі добра / вельмі задаволена.</div>
+ ${tenScale("eventRating",e.rating??e.enjoyment??null)}
+ ${physicalActivity?`
+   <label>Фізічны стан пасля</label>${tenScale("physicalState",e.physicalState??null)}
+   <label>Ментальны стан пасля</label>${tenScale("mentalState",e.mentalState??null)}
+ `:""}
+ <button id="saveFollow" class="primary full">Захаваць ацэнкі</button>
+ <button id="skipFollow" class="ghost full">Прапусціць</button>`);
+ fx.onclick=close;
+ let before=e.beforeEnergy??null,after=e.afterEnergy??null,rating=e.rating??e.enjoyment??null;
+ let physical=e.physicalState??null,mental=e.mentalState??null;
+ bindScale("beforeEnergy",before,v=>before=v);
+ bindScale("afterEnergy",after,v=>after=v);
+ bindScale("eventRating",rating,v=>rating=v);
  if(physicalActivity){
-   open(`<h2>${cat.icon||""} ${esc(e.name||cat.name)}</h2>
-   <div class="hint">Для фізічнай актыўнасці раздзяляем агульную Energy, фізічны і ментальны стан. 10 = вельмі добра / шмат рэсурсу, 0 = вельмі дрэнна / рэсурсу няма.</div>
-
-   <label>Energy пасля</label>${tenScale("afterEnergy")}
-   <label>Фізічны стан пасля ⓘ</label>
-   <div class="hint">0 — цела вельмі стомленае/дрэнна; 10 — цела адчуваецца вельмі добра.</div>
-   ${tenScale("physicalState")}
-   <label>Ментальны стан пасля ⓘ</label>
-   <div class="hint">0 — моцная перагрузка/раздражненне/туман; 10 — ясная галава, спакойна, добра.</div>
-   ${tenScale("mentalState")}
-   <label>Задавальненне ад актыўнасці</label>${tenScale("activityEnjoyment")}
-   <button id="saveFollow" class="primary full">Захаваць</button>
-   <button id="skipFollow" class="ghost full">Прапусціць</button>`);
-
-   let afterEnergy=null,physical=null,mental=null,enjoyment=null;
-   bindScale("afterEnergy",null,v=>afterEnergy=v);
-   bindScale("physicalState",null,v=>physical=v);
-   bindScale("mentalState",null,v=>mental=v);
-   bindScale("activityEnjoyment",null,v=>enjoyment=v);
-   saveFollow.onclick=()=>{
-     e.afterEnergy=afterEnergy;e.physicalState=physical;e.mentalState=mental;e.enjoyment=enjoyment;
-     if(afterEnergy!==null) db.energy.push({ts:e.end||iso(),value:afterEnergy,source:"activity",entryId:e.id});
-     save();close()
-   };
-   skipFollow.onclick=close;
-   return;
+   bindScale("physicalState",physical,v=>physical=v);
+   bindScale("mentalState",mental,v=>mental=v);
  }
-
- open(`<h2>${cat.icon||""} ${esc(e.name||cat.name)}</h2>
- <div class="hint">Кароткі follow-up. 10 = шмат рэсурсу / вельмі задаволена; 0 = рэсурсу няма / зусім не задаволена.</div>
- <label>Energy пасля</label>${tenScale("afterEnergy")}
- <label>Задавальненне ад гэтай актыўнасці</label>${tenScale("activityEnjoyment")}
- <button id="saveFollow" class="primary full">Захаваць</button><button id="skipFollow" class="ghost full">Прапусціць</button>`);
- let afterEnergy=null,enjoyment=null;
- bindScale("afterEnergy",null,v=>afterEnergy=v);
- bindScale("activityEnjoyment",null,v=>enjoyment=v);
  saveFollow.onclick=()=>{
-   e.afterEnergy=afterEnergy;e.enjoyment=enjoyment;
-   if(afterEnergy!==null) db.energy.push({ts:e.end||iso(),value:afterEnergy,source:"activity",entryId:e.id});
-   save();close()
+   e.beforeEnergy=before;e.afterEnergy=after;e.rating=rating;
+   if(physicalActivity){e.physicalState=physical;e.mentalState=mental}
+   upsertEventEnergy(e,"before",before);
+   upsertEventEnergy(e,"after",after);
+   save();close();
  };
  skipFollow.onclick=close;
 }
 function render(){
  renderYesterdayRating();
  const work=db.entries.find(e=>e.cat==="work" && e.start.slice(0,10)===day());
- workChipArea.innerHTML=`<button id="workChip" class="${work?"pill primary":"tile"}" style="${work?"margin-bottom:10px":""}"><b>💼 ${work?"Праца ✓":"Праца"}</b>${work?` · ${work.workPlace==="home"?"дома":work.workPlace==="office"?"офіс":"змешана"}${work.endEnergy!==null&&work.endEnergy!==undefined?` · пасля ${work.endEnergy}/10`:""}`:"<span class='small'>дадаць / абнавіць на працягу дня</span>"}</button>`;
- workChip.onclick=()=>entryModal(db.categories.find(c=>c.id==="work"));
- eventGrid.innerHTML=db.categories.filter(c=>c.id!=="work"&&c.id!=="office").map(c=>`<button class="tile" data-c="${c.id}"><b>${c.icon} ${esc(c.name)}</b><span class="small">дадаць</span></button>`).join("");
- eventGrid.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>entryModal(db.categories.find(c=>c.id===b.dataset.c)));
+ const workPoints=db.energy.filter(x=>x.workScoped===true && x.date===day()).sort((a,b)=>new Date(a.ts)-new Date(b.ts));
+ const workHistory=workPoints.map(x=>x.value).join(" → ");
+ workChipArea.innerHTML=work?`
+ <div class="card active-chip" style="margin-bottom:10px">
+   <div class="row between">
+     <div>
+       <b>💼 Праца ✓</b>
+       <div class="small" style="color:#d9e3ff">${work.workPlace==="home"?"дома":work.workPlace==="office"?"офіс":"змешана"}${work.contexts!=null?` · кантэксты ${work.contexts}`:""}${work.calls!=null?` · размовы ${work.calls}`:""}</div>
+       ${workHistory?`<div class="small" style="color:#f4f7ff;margin-top:4px">⚡ ${workHistory}</div>`:""}
+     </div>
+     <div class="chip-actions">
+       <button id="workEnergyAdd" class="ghost" title="Дадаць Energy">＋</button>
+       <button id="workEdit" class="ghost" title="Рэдагаваць працу">✎</button>
+     </div>
+   </div>
+ </div>`:
+ `<div class="card" style="margin-bottom:10px">
+   <div class="row between">
+     <div><b>💼 Праца</b></div>
+     <button id="workAdd" class="ghost" title="Дадаць працу">＋</button>
+   </div>
+ </div>`;
+ globalEnergyBtn.onclick=()=>globalEnergyModal();
+ if(work){
+   workEnergyAdd.onclick=()=>workEnergyModal(work);
+   workEdit.onclick=()=>entryModal(db.categories.find(c=>c.id==="work"),work);
+ } else {
+   workAdd.onclick=()=>entryModal(db.categories.find(c=>c.id==="work"));
+ }
+ eventGrid.innerHTML=db.categories.filter(c=>c.id!=="work"&&c.id!=="office").map(c=>`
+ <div class="tile row between" data-c="${c.id}">
+   <div><b>${c.icon} ${esc(c.name)}</b></div>
+   <button class="ghost iconbtn" data-add="${c.id}" title="Дадаць">＋</button>
+ </div>`).join("");
+ eventGrid.querySelectorAll("[data-add]").forEach(b=>b.onclick=(ev)=>{ev.stopPropagation();entryModal(db.categories.find(c=>c.id===b.dataset.add))});
+ eventGrid.querySelectorAll("[data-c]").forEach(card=>card.onclick=()=>entryModal(db.categories.find(c=>c.id===card.dataset.c)));
  renderLog();renderManage();drawDay();drawWeek();renderWeekStats();
 }
 
@@ -336,20 +377,65 @@ function energySummaryForDate(date){
  };
 }
 
+
+
+function globalEnergyModal(){
+ open(`<h2>⚡ Energy зараз</h2><div class="hint">Проста адзнач стан у гэты момант. Прычыну ведаць або выбіраць не трэба.</div>${tenScale("globalEnergyScale",null)}<button id="saveGlobalEnergy" class="primary full">Захаваць</button>`);
+ let value=null; bindScale("globalEnergyScale",null,v=>value=v);
+ saveGlobalEnergy.onclick=()=>{if(value===null){alert("Абяры Energy 0–10");return}db.energy.push({ts:iso(),date:day(),value,source:"global"});save();close()};
+}
+function workEnergyModal(work){
+  open(`<h2>⚡ Energy на працы</h2>
+  <div class="hint">Адзнач стан проста цяпер. Гэта будзе асобны checkpoint у межах працоўнага дня.</div>
+  ${tenScale("workEnergyScale",null)}
+  <button id="saveWorkEnergy" class="primary full">Захаваць</button>`);
+  let value=null;
+  bindScale("workEnergyScale",null,v=>value=v);
+  saveWorkEnergy.onclick=()=>{
+    if(value===null){alert("Абяры Energy 0–10");return}
+    db.energy.push({ts:iso(),date:day(),value,source:"work-checkpoint",workScoped:true,workEntryId:work.id});
+    save();close();
+  };
+}
 function renderLog(){
  let items=[];
- db.energy.filter(x=>x.ts.slice(0,10)===day()).forEach(x=>items.push({ts:x.ts,html:`⚡ Energy <b>${x.value}/10</b>`}));
+ db.energy.filter(x=>x.ts.slice(0,10)===day()).forEach(x=>items.push({
+ ts:x.ts,
+ html:`⚡ Energy <b>${x.value}/10</b>${x.workScoped?` <span class="tag">#праца</span>`:""}`,
+ energyId:(x.workScoped?x.ts+"|"+x.source+"|"+(x.workEntryId||"") : null)
+}));
  db.sleep.filter(x=>x.date===day()).forEach(x=>items.push({ts:x.ts,html:`😴 Сон <b>${x.hours} г</b> · ${x.rested?"выспалася":"не выспалася"}`}));
  db.entries.filter(x=>x.start.slice(0,10)===day()).forEach(e=>{let c=db.categories.find(c=>c.id===e.cat)||{};let details=e.cat==="work"?`${e.workPlace==="home"?"дома":e.workPlace==="office"?"офіс":"змешана"} · да ${e.startEnergy??"—"}/10 · кантэксты: ${e.contexts??"—"} · размовы: ${e.calls??"—"} · пасля ${e.endEnergy??"—"}/10`:(e.durationMin?`~${e.durationMin} хв · запіс ${fmt(e.end||e.start)}`:(e.durationMin?`~${e.durationMin} хв`:`запіс ${fmt(e.end||e.start)}`));let effects="";
-if(["walk","bike","workout"].includes(e.cat) && (e.physicalState!==undefined||e.mentalState!==undefined)){
- effects=`<br><span class="small">Energy пасля: ${e.afterEnergy??"—"}/10 · цела: ${e.physicalState??"—"}/10 · ментальна: ${e.mentalState??"—"}/10 · задавальненне: ${e.enjoyment??"—"}/10</span>`;
-} else if(e.afterEnergy!==undefined || e.enjoyment!==undefined){
- effects=`<br><span class="small">Energy пасля: ${e.afterEnergy??"—"}/10 · задавальненне: ${e.enjoyment??"—"}/10</span>`;
+const delta=(e.beforeEnergy!==null&&e.beforeEnergy!==undefined&&e.afterEnergy!==null&&e.afterEnergy!==undefined)?e.afterEnergy-e.beforeEnergy:null;
+if(e.beforeEnergy!==undefined || e.afterEnergy!==undefined || e.rating!==undefined){
+ effects=`<br><span class="small">Energy: ${e.beforeEnergy??"—"} → ${e.afterEnergy??"—"}${delta!==null?` · Δ ${delta>0?"+":""}${delta}`:""} · ацэнка: ${e.rating??"—"}/10${["walk","bike","workout"].includes(e.cat)?` · цела: ${e.physicalState??"—"}/10 · ментальна: ${e.mentalState??"—"}/10`:""}</span>`;
 }
 items.push({ts:e.start,html:`${c.icon||""} <b>${esc(e.name||c.name||e.cat)}</b> ${details}<br>${(e.tags||[]).map(t=>`<span class="tag">#${esc(t)}</span>`).join("")}${effects}`,id:e.id})});
  items.sort((a,b)=>new Date(b.ts)-new Date(a.ts));
- todayLog.innerHTML=items.length?items.map(x=>`<div class="logitem"><div class="row between"><div>${x.html}</div>${x.id?`<button data-del="${x.id}" class="ghost">⋯</button>`:""}</div></div>`).join(""):`<div class="muted">Пакуль няма запісаў.</div>`;
- todayLog.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{let e=db.entries.find(x=>x.id===b.dataset.del);open(`<h3>${esc(e.name||db.categories.find(c=>c.id===e.cat)?.name||"Падзея")}</h3><button id="del" class="danger full">Выдаліць</button><button id="cancel" class="ghost full">Адмена</button>`);del.onclick=()=>{db.entries=db.entries.filter(x=>x.id!==e.id);save();close()};cancel.onclick=close});
+ todayLog.innerHTML=items.length?items.map(x=>`<div class="logitem"><div class="row between"><div>${x.html}</div>${x.id?`<div class="log-actions"><button data-edit="${x.id}" class="ghost iconbtn" title="Рэдагаваць">✎</button><button data-del="${x.id}" class="ghost iconbtn" title="Выдаліць">🗑</button></div>`:x.energyId?`<div class="log-actions"><button data-eedit="${esc(x.energyId)}" class="ghost iconbtn" title="Рэдагаваць Energy">✎</button><button data-edel="${esc(x.energyId)}" class="ghost iconbtn" title="Выдаліць Energy">🗑</button></div>`:""}</div></div>`).join(""):`<div class="muted">Пакуль няма запісаў.</div>`;
+ todayLog.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>{
+   const e=db.entries.find(x=>x.id===b.dataset.edit); if(!e)return;
+   const cat=db.categories.find(c=>c.id===e.cat); if(!cat)return;
+   entryModal(cat,e);
+ });
+ todayLog.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{
+   let e=db.entries.find(x=>x.id===b.dataset.del);
+   open(`<h3>${esc(e.name||db.categories.find(c=>c.id===e.cat)?.name||"Падзея")}</h3><div class="hint">Будзе выдалена падзея і Energy check-in’ы, звязаныя з ёй.</div><button id="del" class="danger full">Выдаліць</button><button id="cancel" class="ghost full">Адмена</button>`);
+   del.onclick=()=>{db.entries=db.entries.filter(x=>x.id!==e.id);db.energy=db.energy.filter(x=>x.entryId!==e.id);save();close()};cancel.onclick=close
+ });
+ todayLog.querySelectorAll("[data-eedit]").forEach(b=>b.onclick=()=>{
+   const [ts,source,workEntryId]=b.dataset.eedit.split("|");
+   const point=db.energy.find(x=>x.ts===ts && x.source===source && String(x.workEntryId||"")===workEntryId);
+   if(!point)return;
+   open(`<h3>⚡ Рэдагаваць Energy</h3>${tenScale("editWorkEnergy",point.value)}<button id="saveEditedEnergy" class="primary full">Захаваць</button>`);
+   let v=point.value;bindScale("editWorkEnergy",v,n=>v=n);
+   saveEditedEnergy.onclick=()=>{point.value=v;save();close()};
+ });
+ todayLog.querySelectorAll("[data-edel]").forEach(b=>b.onclick=()=>{
+   const [ts,source,workEntryId]=b.dataset.edel.split("|");
+   db.energy=db.energy.filter(x=>!(x.ts===ts && x.source===source && String(x.workEntryId||"")===workEntryId));
+   save();
+ });
 }
 sleepBtn.onclick=()=>open(`<h2>😴 Сон</h2><div class="hint">Запіс адносіцца да сённяшняга ранку: колькі ты спала перад тым, як прачнулася сёння.</div><label>Гадзін</label><input id="hours" type="number" min="0" max="24" step=".5" value="10"><label class="row"><input id="rested" type="checkbox"> Прачнулася выспанай</label><button id="ss" class="primary full">Захаваць</button>`);
 document.addEventListener("click",e=>{if(e.target.id==="ss"){db.sleep=db.sleep.filter(x=>x.date!==day());db.sleep.push({date:day(),ts:iso(),hours:+hours.value,rested:rested.checked});save();close()}});
@@ -422,7 +508,7 @@ function renderWeekStats(){
 }
 document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".nav button").forEach(x=>x.classList.toggle("on",x===b));document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===b.dataset.s));title.textContent={today:"Сёння",week:"Тыдзень",manage:"Налады",data:"Даныя"}[b.dataset.s];render()});
 exportJson.onclick=()=>download("energy-lab.json",JSON.stringify({version:2,exportedAt:iso(),data:db},null,2),"application/json");
-exportCsv.onclick=()=>{let rows=[["type","category","name","start","end","value","tags","enjoyment","physical_state","mental_state","impact","note"]];db.energy.forEach(x=>rows.push(["energy","","",x.ts,"",x.value,"","","","","",""]));db.entries.forEach(e=>rows.push(["event",e.cat,e.name,e.start,e.end||"","",(e.tags||[]).join("|"),e.enjoyment??"",e.physicalState??"",e.mentalState??"",e.impact||"",e.note||""]));db.sleep.forEach(s=>rows.push(["sleep","","",s.ts,"",s.hours,"",s.rested?"rested":"not_rested","","","",""]));(db.dayRatings||[]).forEach(r=>rows.push(["day_rating","","",r.ts||r.date,"",r.rating,"","","","","",r.note||""]));download("energy-lab.csv",rows.map(r=>r.map(v=>`"${String(v??"").replaceAll('"','""')}"`).join(",")).join("\n"),"text/csv")};
+exportCsv.onclick=()=>{let rows=[["type","category","name","start","end","value","tags","rating","energy_before","energy_after","energy_delta","physical_state","mental_state","impact","note"]];db.energy.forEach(x=>rows.push(["energy","","",x.ts,"",x.value,"","","","","","","","","",""]));db.entries.forEach(e=>rows.push(["event",e.cat,e.name,e.start,e.end||"","",(e.tags||[]).join("|"),e.rating??"",e.beforeEnergy??"",e.afterEnergy??"",((e.beforeEnergy??null)!==null&&(e.afterEnergy??null)!==null)?e.afterEnergy-e.beforeEnergy:"",e.physicalState??"",e.mentalState??"",e.impact||"",e.note||""]));db.sleep.forEach(s=>rows.push(["sleep","","",s.ts,"",s.hours,"",s.rested?"rested":"not_rested","","","","","","","",""]));(db.dayRatings||[]).forEach(r=>rows.push(["day_rating","","",r.ts||r.date,"",r.rating,"","","","","","","","","",r.note||""]));download("energy-lab.csv",rows.map(r=>r.map(v=>`"${String(v??"").replaceAll('"','""')}"`).join(",")).join("\n"),"text/csv")};
 function download(name,text,type){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
 importJson.onchange=async e=>{try{let x=JSON.parse(await e.target.files[0].text());db=x.data||x;save();alert("Імпартавана")}catch{alert("Не атрымалася імпартаваць")}};
 reset.onclick=()=>{if(confirm("Выдаліць усе лакальныя даныя?")){db=structuredClone(defaults);save()}};
@@ -431,7 +517,7 @@ render();
 
 <script>
 (() => {
-  const VERSION = "10.0.2";
+  const VERSION = "10.2.1";
   const RELOAD_GUARD = "energyLabReloadedFor:" + VERSION;
 
   if (!("serviceWorker" in navigator) || !location.protocol.startsWith("http")) return;
