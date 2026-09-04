@@ -1,10 +1,10 @@
-const VERSION = "10.2.1";
-const CACHE_NAME = "energy-lab-10.2.1";
+const VERSION = "10.2.2";
+const CACHE_NAME = "energy-lab-10.2.2";
 const APP_SHELL = [
   "./index.html",
-  "./manifest.webmanifest?v=10.2.1",
-  "./icon-192.png?v=10.2.1",
-  "./icon-512.png?v=10.2.1"
+  "./manifest.webmanifest?v=10.2.2",
+  "./icon-192.png?v=10.2.2",
+  "./icon-512.png?v=10.2.2"
 ];
 
 self.addEventListener("install", event => {
